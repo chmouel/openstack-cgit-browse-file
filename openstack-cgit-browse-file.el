@@ -1,0 +1,89 @@
+;;; openstack-cgit-browse-file.el --- View the current file in OpenStack cgit
+
+;; Copyright (C) 2013 Chmouel Boudjnah <chmouel@chmouel.com>
+
+;; Author: Chmouel Boudjnah <chmouel@chmouel.com>
+;; Homepage: https://github.com/osener/github-browse-file
+;; Version: 0.1
+;; Keywords: convenience vc git cgit gerrit
+
+;;; Installation:
+
+;;; Commentary:
+
+;; Call `openstack-cgit-browse-file' (for the git blob) or `github-browse-file-blame'
+;; (for the git blame) to view current file on GitHub. With a prefix argument
+;; (C-u), you can force them to use the "master" branch.
+
+;; Inspired by github-browse-file for OpenStack and cgit
+;; from Ozan Sener <ozan@ozansener.com> See:
+;; https://github.com/osener/github-browse-file
+
+;;; License:
+
+;; This file is NOT part of GNU Emacs.
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Code:
+
+(require 'vc-git)
+
+(defvar cgit-url "https://git.openstack.org/cgit")
+
+(defun openstack-cgit-file--repo-relative-path ()
+  "Return the path to the current file relative to the repository root.
+Imported from github-browse-library"
+  (let* ((root (ignore-errors (vc-git-root buffer-file-name))))
+    (and root (file-relative-name buffer-file-name root))))
+
+
+(defun openstack-cgit-get-url()
+  (let ((review-branch "master")
+        (review-project)
+        (review-file (locate-dominating-file default-directory ".gitreview")))
+    (with-temp-buffer
+      (setq review-file (concat review-file ".gitreview" ))
+      (buffer-disable-undo)
+      (cond ((get-file-buffer review-file)
+             (insert (with-current-buffer (get-file-buffer review-file)
+                       (buffer-substring (point-min) (point-max)))))
+            ((not (file-exists-p review-file)))
+            (t (insert-file-contents review-file)))
+      (goto-char (point-max))
+      (or (eq (preceding-char) ?\n) (newline))
+      (goto-char (point-min))
+      (while (re-search-forward
+              "^defaultbranch=\\([^ \t\n]+\\)" nil t)
+        (setq review-branch (buffer-substring (match-beginning 1) (match-end 1))))
+      (while
+          (re-search-forward
+           "^project=\\([^ \t\n]+\\)" nil t)
+        (setq review-project
+              (replace-regexp-in-string "\.git$" ""
+                                        (buffer-substring (match-beginning 1) (match-end 1))))))
+    (if review-project
+        (concat cgit-url "/" review-project "/tree/" (openstack-cgit-file--repo-relative-path)
+                "?h=" review-branch))))
+
+(defun openstack-cgit-browse-file()
+  (interactive)
+  (let ((n (line-number-at-pos))
+        (url (openstack-cgit-get-url)))
+    (if url
+        (browse-url (format "%s#n%d" url n)))
+    )
+  )
+
+(provide 'openstack-cgit-browse-file)
