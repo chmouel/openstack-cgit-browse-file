@@ -1,4 +1,4 @@
-;;; openstack-cgit-browse-file.el --- View the current file in OpenStack cgit
+;;; openstack-cgit-browse-file.el --- Browse the current file in OpenStack cgit
 
 ;; Copyright (C) 2013 Chmouel Boudjnah <chmouel@chmouel.com>
 
@@ -11,7 +11,8 @@
 
 ;;; Commentary:
 
-;; Call `openstack-cgit-browse-file' (for the git blob) to view current file on OpenStack cgit.
+;; Call `openstack-cgit-browse-file' (for the git blob) to browse
+;; current file on OpenStack cgit.
 
 ;; Inspired by github-browse-file for OpenStack and cgit
 ;; from Ozan Sener <ozan@ozansener.com> See:
