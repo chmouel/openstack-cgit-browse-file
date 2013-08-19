@@ -48,7 +48,7 @@ Imported from github-browse-library"
     (and root (file-relative-name buffer-file-name root))))
 
 
-(defun openstack-cgit-get-url()
+(defun openstack-cgit-get-gitreview-info()
   (let ((review-branch "master")
         (review-project)
         (review-file (locate-dominating-file default-directory ".gitreview")))
@@ -73,18 +73,21 @@ Imported from github-browse-library"
               (replace-regexp-in-string "\.git$" ""
                                         (buffer-substring (match-beginning 1) (match-end 1))))))
     (if review-project
-        (concat openstack-cgit-url "/"
-                review-project "/tree/"
-                (openstack-cgit-file--repo-relative-path)
-                "?h=" review-branch))))
+        (list review-project review-branch)
+        )))
 
 ;;;###autoload
 (defun openstack-cgit-browse-file()
   (interactive)
   (let ((n (line-number-at-pos))
-        (url (openstack-cgit-get-url)))
-    (if url
-        (browse-url (format "%s#n%d" url n)))))
+        (gitreview-info (openstack-cgit-get-gitreview-info)))
+    (if gitreview-info
+        (browse-url (format "%s/%s/tree/%s?h=%s#n%d"
+                            openstack-cgit-url
+                            (car gitreview-info)
+                            (openstack-cgit-file--repo-relative-path)
+                            (nth 1 gitreview-info)
+                            n)))))
 
 (provide 'openstack-cgit-browse-file)
 
