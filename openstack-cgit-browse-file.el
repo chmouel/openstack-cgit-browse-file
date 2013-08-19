@@ -3,17 +3,15 @@
 ;; Copyright (C) 2013 Chmouel Boudjnah <chmouel@chmouel.com>
 
 ;; Author: Chmouel Boudjnah <chmouel@chmouel.com>
-;; Homepage: https://github.com/osener/github-browse-file
+;; Homepage: https://github.com/chmouel/openstack-cgit-browse-file
 ;; Version: 0.1
-;; Keywords: convenience vc git cgit gerrit
+;; Keywords: convenience vc git cgit gerrit openstack
 
 ;;; Installation:
 
 ;;; Commentary:
 
-;; Call `openstack-cgit-browse-file' (for the git blob) or `github-browse-file-blame'
-;; (for the git blame) to view current file on GitHub. With a prefix argument
-;; (C-u), you can force them to use the "master" branch.
+;; Call `openstack-cgit-browse-file' (for the git blob) to view current file on OpenStack cgit.
 
 ;; Inspired by github-browse-file for OpenStack and cgit
 ;; from Ozan Sener <ozan@ozansener.com> See:
@@ -40,7 +38,7 @@
 
 (require 'vc-git)
 
-(defvar cgit-url "https://git.openstack.org/cgit")
+(defvar openstack-cgit-url "https://git.openstack.org/cgit")
 
 (defun openstack-cgit-file--repo-relative-path ()
   "Return the path to the current file relative to the repository root.
@@ -74,7 +72,9 @@ Imported from github-browse-library"
               (replace-regexp-in-string "\.git$" ""
                                         (buffer-substring (match-beginning 1) (match-end 1))))))
     (if review-project
-        (concat cgit-url "/" review-project "/tree/" (openstack-cgit-file--repo-relative-path)
+        (concat openstack-cgit-url "/"
+                review-project "/tree/"
+                (openstack-cgit-file--repo-relative-path)
                 "?h=" review-branch))))
 
 (defun openstack-cgit-browse-file()
@@ -87,3 +87,5 @@ Imported from github-browse-library"
   )
 
 (provide 'openstack-cgit-browse-file)
+
+;;; openstack-cgit-browse-file.el ends here
