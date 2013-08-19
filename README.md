@@ -5,9 +5,11 @@ openstack cgit (see: http://git.openstack.org).
 
 ## Usage
 
-Use M-x openstack-cgit-browse-file in a openstack projects (which has
-a gitreview file) and it will jump to the right branch and the right
-line.
+Use M-x `openstack-cgit-browse-file` in a openstack projects (which
+has a gitreview file) and it will jump to the right branch and the
+right line.
+
+Use M-x `openstack-cgit-repo-log` to jump to the log of that project.
 
 ## Install
 

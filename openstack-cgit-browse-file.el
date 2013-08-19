@@ -89,6 +89,17 @@ Imported from github-browse-library"
                             (nth 1 gitreview-info)
                             n)))))
 
+;;;###autoload
+(defun openstack-cgit-repo-log()
+  (interactive)
+  (let ((gitreview-info (openstack-cgit-get-gitreview-info)))
+    (if gitreview-info
+        (browse-url (format "%s/%s/log/?h=%s"
+                            openstack-cgit-url
+                            (car gitreview-info)
+                            (nth 1 gitreview-info))))))
+
+
 (provide 'openstack-cgit-browse-file)
 
 ;;; openstack-cgit-browse-file.el ends here
