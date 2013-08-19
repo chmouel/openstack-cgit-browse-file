@@ -78,14 +78,13 @@ Imported from github-browse-library"
                 (openstack-cgit-file--repo-relative-path)
                 "?h=" review-branch))))
 
+;;;###autoload
 (defun openstack-cgit-browse-file()
   (interactive)
   (let ((n (line-number-at-pos))
         (url (openstack-cgit-get-url)))
     (if url
-        (browse-url (format "%s#n%d" url n)))
-    )
-  )
+        (browse-url (format "%s#n%d" url n)))))
 
 (provide 'openstack-cgit-browse-file)
 
